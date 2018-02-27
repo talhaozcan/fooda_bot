@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*.bak
+*.swo
+src/fooda_creds.py
