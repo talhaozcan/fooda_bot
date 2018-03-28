@@ -33,4 +33,6 @@ result = session.post(
 # We will also want to construct URLs for our favorite buildings
 # nearby, though - and we can get them from a dropdown on the page.
 soup = BeautifulSoup(result.text)
+dropdownElm = soup.find('div', {'class': 'secondary-bar'})
+links = [elm.get('href') for elm in dropdownElm.find_all('a')]
 import pdb; pdb.set_trace()    
