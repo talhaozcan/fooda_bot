@@ -43,7 +43,8 @@ dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
 links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
 
 print("What's for lunch, you ask?\n")
-print("Well, on this fine date of {}, you plebs may choose from:\n\n".format(datetime.date.today()))
+print("Well, on this fine date of {}, you plebs may choose from:\n\n".format(
+    datetime.date.today().strftime('%A, %d %B %Y')))
 
 for link in links:
     foodpage_result = session.get('{}{}'.format(base_url, link))
