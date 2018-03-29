@@ -1,8 +1,13 @@
+import datetime
 import requests
+import warnings
 
 from bs4 import BeautifulSoup
 from fooda_creds import FOODA_EMAIL, FOODA_PW
 from lxml import html
+
+# First of all, let's be clear that this is dirty and horrible.
+warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
 # Sounds tricky, but turns out their user-visible login page submits
 # to a create form, and THEN redirects you.
@@ -37,6 +42,9 @@ homepage_soup = BeautifulSoup(login_result.text)
 dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
 links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
 
+print("What's for lunch, you ask?\n")
+print("Well, on this fine date of {}, you plebs may choose from:\n\n".format(datetime.date.today()))
+
 for link in links:
     foodpage_result = session.get('{}{}'.format(base_url, link))
     foodpage_soup = BeautifulSoup(foodpage_result.text)
@@ -52,3 +60,7 @@ for link in links:
             'div', {'class': 'myfooda-event__name'}).text.strip()
         vendor_cuisines = vendor.find(
             'div', {'class': 'myfooda-event__cuisines'}).text.strip()
+
+        # Do what you want with this.
+        print('{}\n'.format(location))
+        print('       * {} ({})\n'.format(vendor_name, vendor_cuisines))
