@@ -6,14 +6,15 @@ from lxml import html
 
 # Sounds tricky, but turns out their user-visible login page submits
 # to a create form, and THEN redirects you.
-login_url = 'https://app.fooda.com/create'
-referrer_url = 'https://app.fooda.com/login'
+base_url = 'https://app.fooda.com/'
+login_url = '{}/create'.format(base_url)
+referrer_url = '{}/login'.format(base_url)
 session = requests.session()
 
 # Get authenticity token for login.
 # http://kazuar.github.io/scraping-tutorial/ is super helpful.
-result = session.get(login_url)
-tree = html.fromstring(result.text)
+get_token_result = session.get(login_url)
+tree = html.fromstring(get_token_result.text)
 auth_token = list(set(tree.xpath('//meta[@name="csrf-token"]/@content')))[0]
 
 # Prepare login data, including token friend.
@@ -25,14 +26,29 @@ login_payload = {
 }
 
 # Do teh login.
-result = session.post(
+login_result = session.post(
     login_url, data=login_payload, headers=dict(referer=referrer_url))
 
 # We are now on the default page for 100 Cambridge Park Drive.
 #
 # We will also want to construct URLs for our favorite buildings
 # nearby, though - and we can get them from a dropdown on the page.
-soup = BeautifulSoup(result.text)
-dropdownElm = soup.find('div', {'class': 'secondary-bar'})
-links = [elm.get('href') for elm in dropdownElm.find_all('a')]
-import pdb; pdb.set_trace()    
+homepage_soup = BeautifulSoup(login_result.text)
+dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
+links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
+
+for link in links:
+    foodpage_result = session.get('{}{}'.format(base_url, link))
+    foodpage_soup = BeautifulSoup(foodpage_result.text)
+    fooda_events = foodpage_soup.find_all(
+        'div', {'class': 'myfooda-event__meta'})
+
+    for event in fooda_events:
+        location = event.find(
+            'div', {'class': 'myfooda-event__meta-right myfooda-vendor-location-name'}).text.strip()
+        vendor = event.find(
+            'div', {'class': 'myfooda-event__meta-left'})
+        vendor_name = vendor.find(
+            'div', {'class': 'myfooda-event__name'}).text.strip()
+        vendor_cuisines = vendor.find(
+            'div', {'class': 'myfooda-event__cuisines'}).text.strip()
