@@ -8,7 +8,6 @@ EMOJI_KEYWORDS = {
     'thai': ':flag-th:',
     'vietnamese': ':flag-vn:',
     'sushi': ':sushi:',
-    'american': ':flag-us:',
     'vegetarian': ':onion:',
     'cheese': ':cheese_wedge:',
     'bacon': ':bacon:',
