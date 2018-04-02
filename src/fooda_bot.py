@@ -1,9 +1,11 @@
 import datetime
+import random
 import requests
 import warnings
 
 from bs4 import BeautifulSoup
 from fooda_creds import FOODA_EMAIL, FOODA_PW
+from fooda_goodies import EMOJI_KEYWORDS, GREETINGS
 from lxml import html
 
 # First of all, let's be clear that this is dirty and horrible.
@@ -42,8 +44,8 @@ homepage_soup = BeautifulSoup(login_result.text)
 dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
 links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
 
-print("What's for lunch, you ask?\n")
-print("Well, on this fine date of {}, you plebs may choose from:\n\n".format(
+print("{}\n".format(random.choice(GREETINGS)))
+print("On this fine date of {}, you plebs may choose from:\n\n".format(
     datetime.date.today().strftime('%A, %d %B %Y')))
 
 for link in links:
@@ -61,6 +63,11 @@ for link in links:
             'div', {'class': 'myfooda-event__name'}).text.strip()
         vendor_cuisines = vendor.find(
             'div', {'class': 'myfooda-event__cuisines'}).text.strip()
+        # Possibly even add an emoji! :D
+        cuisine_emoji = next(
+            (emoji for kw, emoji in EMOJI_KEYWORDS.items() if kw in vendor_cuisines.lower()), None)
+        if cuisine_emoji:
+            vendor_cuisines = '{} {}'.format(vendor_cuisines, cuisine_emoji)
 
         # Do what you want with this.
         print('{}\n'.format(location))
