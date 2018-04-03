@@ -63,14 +63,14 @@ for link in links:
         'div', {'class': 'myfooda-event__meta'})
 
     for event in fooda_events:
-        location = event.find(
-            'div', {'class': 'myfooda-event__meta-right myfooda-vendor-location-name'}).text.strip()
+        location = unicode(event.find(
+            'div', {'class': 'myfooda-event__meta-right myfooda-vendor-location-name'}).text.strip())
         vendor = event.find(
             'div', {'class': 'myfooda-event__meta-left'})
-        vendor_name = vendor.find(
-            'div', {'class': 'myfooda-event__name'}).text.strip()
-        vendor_cuisines = vendor.find(
-            'div', {'class': 'myfooda-event__cuisines'}).text.strip()
+        vendor_name = unicode(vendor.find(
+            'div', {'class': 'myfooda-event__name'}).text.strip())
+        vendor_cuisines = unicode(vendor.find(
+            'div', {'class': 'myfooda-event__cuisines'}).text.strip())
         # Possibly even add an emoji! :D
         cuisine_emoji = next(
             (emoji for kw, emoji in EMOJI_KEYWORDS.items() if kw in vendor_cuisines.lower()), None)
