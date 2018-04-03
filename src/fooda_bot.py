@@ -96,8 +96,10 @@ def gather_fooda_context():
 def fooda_bot():
     """placeholder for more output logic"""
     jinja_env = jinja2.Environment(
-        undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader(HERE))
-    jinja_env.get_template('fooda.j2').stream(**gather_fooda_context()).dump(fp=sys.stdout)
+        undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader([HERE]))
+    sys.stdout.write(
+        jinja_env.get_template('fooda.j2').render(**gather_fooda_context())
+    )
 
 
 if __name__ == '__main__':
