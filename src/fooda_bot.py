@@ -52,12 +52,12 @@ homepage_soup = BeautifulSoup(login_result.text)
 dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
 links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
 
-print("{}\n".format(random.choice(GREETINGS)))
-print("On this fine date of {}, you plebs may choose from:\n\n".format(
+print(u"{}\n".format(random.choice(GREETINGS)))
+print(u"On this fine date of {}, you plebs may choose from:\n\n".format(
     datetime.date.today().strftime('%A, %d %B %Y')))
 
 for link in links:
-    foodpage_result = session.get('{}{}'.format(base_url, link))
+    foodpage_result = session.get(u'{}{}'.format(base_url, link))
     foodpage_soup = BeautifulSoup(foodpage_result.text)
     fooda_events = foodpage_soup.find_all(
         'div', {'class': 'myfooda-event__meta'})
@@ -75,8 +75,8 @@ for link in links:
         cuisine_emoji = next(
             (emoji for kw, emoji in EMOJI_KEYWORDS.items() if kw in vendor_cuisines.lower()), None)
         if cuisine_emoji:
-            vendor_cuisines = '{} {}'.format(vendor_cuisines, cuisine_emoji)
+            vendor_cuisines = u'{} {}'.format(vendor_cuisines, cuisine_emoji)
 
         # Do what you want with this.
-        print('{}\n'.format(location))
-        print('       * {} ({})\n'.format(vendor_name, vendor_cuisines))
+        print(u'{}\n'.format(location))
+        print(u'       * {} ({})\n'.format(vendor_name, vendor_cuisines))
