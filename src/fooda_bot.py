@@ -88,7 +88,7 @@ def gather_fooda_context():
     context = {
         'random_greeting': random.choice(GREETINGS),
         'current_date': datetime.date.today().strftime('%A, %d %B %Y'),
-        'events': query_fooda_events(base_url, FOODA_EMAIL, FOODA_PW),
+        'fooda_events': query_fooda_events(base_url, FOODA_EMAIL, FOODA_PW),
     }
     return context
 
