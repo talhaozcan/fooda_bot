@@ -1,83 +1,104 @@
 #!/usr/bin/env python
 import datetime
 import os
-import sys
 import random
-import requests
+import sys
 import warnings
-
-from bs4 import BeautifulSoup
-from fooda_goodies import EMOJI_KEYWORDS, GREETINGS
 from lxml import html
 
+import jinja2
+import requests
+from bs4 import BeautifulSoup
+
+from fooda_goodies import EMOJI_KEYWORDS, GREETINGS
+
+HERE = os.path.realpath(os.path.dirname(__file__))
 # First of all, let's be clear that this is dirty and horrible.
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
-# Sounds tricky, but turns out their user-visible login page submits
-# to a create form, and THEN redirects you.
-base_url = 'https://app.fooda.com/'
-login_url = '{}/create'.format(base_url)
-referrer_url = '{}/login'.format(base_url)
-session = requests.session()
 
-FOODA_EMAIL = os.environ.get('FOODA_EMAIL', None)
-FOODA_PW = os.environ.get('FOODA_PW', None)
-if not FOODA_EMAIL or not FOODA_PW:
-    print('Check your creds!')
-    sys.exit(1)
+class FoodaEvent(object):
+    """simple data object for extracting fooda event data from a page"""
 
-# Get authenticity token for login.
-# http://kazuar.github.io/scraping-tutorial/ is super helpful.
-get_token_result = session.get(login_url)
-tree = html.fromstring(get_token_result.text)
-auth_token = list(set(tree.xpath('//meta[@name="csrf-token"]/@content')))[0]
-
-# Prepare login data, including token friend.
-# These are the IDs of our fields...thanks, network tab!
-login_payload = {
-    'user[email]': FOODA_EMAIL,
-    'user[password]': FOODA_PW,
-    'authenticity_token': auth_token,
-}
-
-# Do teh login.
-login_result = session.post(
-    login_url, data=login_payload, headers=dict(referer=referrer_url))
-
-# We are now on the default page for 100 Cambridge Park Drive.
-#
-# We will also want to construct URLs for our favorite buildings
-# nearby, though - and we can get them from a dropdown on the page.
-homepage_soup = BeautifulSoup(login_result.text)
-dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
-links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
-
-print(u"{}\n".format(random.choice(GREETINGS)))
-print(u"On this fine date of {}, you plebs may choose from:\n\n".format(
-    datetime.date.today().strftime('%A, %d %B %Y')))
-
-for link in links:
-    foodpage_result = session.get(u'{}{}'.format(base_url, link))
-    foodpage_soup = BeautifulSoup(foodpage_result.text)
-    fooda_events = foodpage_soup.find_all(
-        'div', {'class': 'myfooda-event__meta'})
-
-    for event in fooda_events:
-        location = unicode(event.find(
-            'div', {'class': 'myfooda-event__meta-right myfooda-vendor-location-name'}).text.strip())
-        vendor = event.find(
+    def __init__(self, event_html):
+        self.location = event_html.find(
+            'div', {'class': 'myfooda-event__meta-right myfooda-vendor-location-name'}).text.strip()
+        self.vendor = event_html.find(
             'div', {'class': 'myfooda-event__meta-left'})
-        vendor_name = unicode(vendor.find(
-            'div', {'class': 'myfooda-event__name'}).text.strip())
-        vendor_cuisines = unicode(vendor.find(
-            'div', {'class': 'myfooda-event__cuisines'}).text.strip())
+        self.vendor_name = self.vendor.find(
+            'div', {'class': 'myfooda-event__name'}).text.strip()
+        self.vendor_cuisines = self.vendor.find(
+            'div', {'class': 'myfooda-event__cuisines'}).text.strip()
         # Possibly even add an emoji! :D
-        cuisine_emoji = next(
-            (emoji for kw, emoji in EMOJI_KEYWORDS.items() if kw in vendor_cuisines.lower()), None)
-        if cuisine_emoji:
-            vendor_cuisines = u'{} {}'.format(vendor_cuisines, cuisine_emoji)
+        self.cuisine_emoji = next(
+            (emoji for kw, emoji in EMOJI_KEYWORDS.items() if kw in self.vendor_cuisines.lower()),
+            None)
 
-        # Do what you want with this.
-        print(u'{}\n'.format(location))
-        print(u'       * {} ({})\n'.format(
-            vendor_name, vendor_cuisines))
+
+def query_fooda_events(base_url, email, password):
+    """Queries Fooda website for events"""
+    # Sounds tricky, but turns out their user-visible login page submits
+    # to a create form, and THEN redirects you.
+    login_url = '{}/create'.format(base_url)
+    referrer_url = '{}/login'.format(base_url)
+    session = requests.session()
+
+    # Get authenticity token for login.
+    # http://kazuar.github.io/scraping-tutorial/ is super helpful.
+    get_token_result = session.get(login_url)
+    tree = html.fromstring(get_token_result.text)
+    auth_token = list(set(tree.xpath('//meta[@name="csrf-token"]/@content')))[0]
+
+    # Prepare login data, including token friend.
+    # These are the IDs of our fields...thanks, network tab!
+    login_payload = {
+        'user[email]': email,
+        'user[password]': password,
+        'authenticity_token': auth_token,
+    }
+
+    # Do teh login.
+    login_result = session.post(
+        login_url, data=login_payload, headers=dict(referer=referrer_url))
+
+    # We are now on the default page for 100 Cambridge Park Drive.
+    #
+    # We will also want to construct URLs for our favorite buildings
+    # nearby, though - and we can get them from a dropdown on the page.
+    homepage_soup = BeautifulSoup(login_result.text)
+    dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
+    links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
+
+    for link in links:
+        foodpage_result = session.get('{}{}'.format(base_url, link))
+        foodpage_soup = BeautifulSoup(foodpage_result.text)
+        fooda_events = foodpage_soup.find_all(
+            'div', {'class': 'myfooda-event__meta'})
+
+        for event in fooda_events:
+            event = FoodaEvent(event_html=event)
+            yield event
+
+
+def gather_fooda_context():
+    """gathers all the context needed for a fooda template"""
+    base_url = 'https://app.fooda.com/'
+    FOODA_EMAIL = os.environ['FOODA_EMAIL']
+    FOODA_PW = os.environ['FOODA_PW']
+    context = {
+        'random_greeting': random.choice(GREETINGS),
+        'current_date': datetime.date.today().strftime('%A, %d %B %Y'),
+        'events': query_fooda_events(base_url, FOODA_EMAIL, FOODA_PW),
+    }
+    return context
+
+
+def fooda_bot():
+    """placeholder for more output logic"""
+    jinja_env = jinja2.Environment(
+        undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader(HERE))
+    jinja_env.get_template('fooda.j2').stream(**gather_fooda_context()).dump(fp=sys.stdout)
+
+
+if __name__ == '__main__':
+    fooda_bot()
