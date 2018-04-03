@@ -79,4 +79,5 @@ for link in links:
 
         # Do what you want with this.
         print(u'{}\n'.format(location))
-        print(u'       * %s (%s)\n' % (vendor_name, vendor_cuisines))
+        print(u'       * {} ({})\n'.format(
+            vendor_name.encode('utf-8'), vendor_cuisines.encode('utf-8')))
