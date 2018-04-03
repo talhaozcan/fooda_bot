@@ -1,6 +1,9 @@
 {{ random_greeting }}
+
 On this fine date of {{ current_date }}, you plebs may choose from:
+
 {% for event in fooda_events -%}
 {{ event.location }}
   - {{ event.vendor_name }} ({{ event.vendor_cuisines }}{% if event.cuisine_emoji %} {{ event.cuisine_emoji }}{% endif %})
+
 {% endfor -%}
