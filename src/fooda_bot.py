@@ -67,7 +67,7 @@ def query_fooda_events(base_url, email, password):
     # nearby, though - and we can get them from a dropdown on the page.
     homepage_soup = BeautifulSoup(login_result.text)
     dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
-    links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
+    links = (elm.get('href') for elm in dropdown_elm.find_all('a'))
 
     for link in links:
         foodpage_result = session.get(base_url + link)
@@ -98,7 +98,8 @@ def fooda_bot():
     jinja_env = jinja2.Environment(
         undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader([HERE]))
     jinja_template = jinja_env.get_template('fooda.j2')
-    jinja_template.stream(**gather_fooda_context()).dump(sys.stdout, errors='replace')
+    sys.stdout.write(
+        jinja_template.render(**gather_fooda_context()).encode('utf-8', errors='replace'))
 
 
 if __name__ == '__main__':
