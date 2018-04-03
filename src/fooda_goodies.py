@@ -17,6 +17,7 @@ EMOJI_KEYWORDS = {
     'beef': ':cow:',
     'fish': ':fish:',
     'pizza': ':pizza:',
+    'deli': ':sandwich:',
 }
 
 GREETINGS = [
