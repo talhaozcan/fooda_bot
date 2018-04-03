@@ -70,7 +70,7 @@ def query_fooda_events(base_url, email, password):
     links = [elm.get('href') for elm in dropdown_elm.find_all('a')]
 
     for link in links:
-        foodpage_result = session.get('{}{}'.format(base_url, link))
+        foodpage_result = session.get(base_url + link)
         foodpage_soup = BeautifulSoup(foodpage_result.text)
         fooda_events = foodpage_soup.find_all(
             'div', {'class': 'myfooda-event__meta'})
@@ -97,9 +97,8 @@ def fooda_bot():
     """placeholder for more output logic"""
     jinja_env = jinja2.Environment(
         undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader([HERE]))
-    sys.stdout.write(
-        jinja_env.get_template('fooda.j2').render(**gather_fooda_context())
-    )
+    jinja_template = jinja_env.get_template('fooda.j2')
+    jinja_template.stream(**gather_fooda_context()).dump(sys.stdout, errors='replace')
 
 
 if __name__ == '__main__':
