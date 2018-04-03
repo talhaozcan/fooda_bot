@@ -1,10 +1,12 @@
+#!/usr/bin/env python
 import datetime
+import os
+import sys
 import random
 import requests
 import warnings
 
 from bs4 import BeautifulSoup
-from fooda_creds import FOODA_EMAIL, FOODA_PW
 from fooda_goodies import EMOJI_KEYWORDS, GREETINGS
 from lxml import html
 
@@ -17,6 +19,12 @@ base_url = 'https://app.fooda.com/'
 login_url = '{}/create'.format(base_url)
 referrer_url = '{}/login'.format(base_url)
 session = requests.session()
+
+FOODA_EMAIL = os.environ.get('FOODA_EMAIL', None)
+FOODA_PW = os.environ.get('FOODA_PW', None)
+if not FOODA_EMAIL or not FOODA_PW:
+    print('Check your creds!')
+    sys.exit(1)
 
 # Get authenticity token for login.
 # http://kazuar.github.io/scraping-tutorial/ is super helpful.
