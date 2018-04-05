@@ -7,14 +7,18 @@ import warnings
 from lxml import html
 
 import jinja2
+import yaml
 import requests
 from bs4 import BeautifulSoup
 
-from fooda_goodies import EMOJI_KEYWORDS, GREETINGS
 
 HERE = os.path.realpath(os.path.dirname(__file__))
 # First of all, let's be clear that this is dirty and horrible.
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
+
+FLAVOR_TEXT = yaml.load(HERE + '/flavor_text.yml')
+EMOJI_KEYWORDS = FLAVOR_TEXT['emoji_keywords']
+GREETINGS = FLAVOR_TEXT['greetings']
 
 
 class FoodaEvent(object):
@@ -85,6 +89,7 @@ def gather_fooda_context():
     base_url = 'https://app.fooda.com/'
     FOODA_EMAIL = os.environ['FOODA_EMAIL']
     FOODA_PW = os.environ['FOODA_PW']
+
     context = {
         'random_greeting': random.choice(GREETINGS),
         'current_date': datetime.date.today().strftime('%A, %d %B %Y'),
