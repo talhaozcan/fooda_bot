@@ -16,7 +16,8 @@ HERE = os.path.realpath(os.path.dirname(__file__))
 # First of all, let's be clear that this is dirty and horrible.
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
-FLAVOR_TEXT = yaml.load(HERE + '/flavor_text.yml')
+with open(HERE + '/flavor_text.yml', 'r') as fp:
+    FLAVOR_TEXT = yaml.load(fp)
 EMOJI_KEYWORDS = FLAVOR_TEXT['emoji_keywords']
 GREETINGS = FLAVOR_TEXT['greetings']
 
