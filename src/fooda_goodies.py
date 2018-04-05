@@ -19,6 +19,7 @@ EMOJI_KEYWORDS = {
     'pizza': ':pizza:',
     'deli': ':sandwich:',
     'rice guys': ':jfurtado:',
+    'barbecue': ':meat_on_bone: :interrobang:',
 }
 
 GREETINGS = [
