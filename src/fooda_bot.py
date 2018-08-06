@@ -66,23 +66,14 @@ def query_fooda_events(base_url, email, password):
     login_result = session.post(
         login_url, data=login_payload, headers=dict(referer=referrer_url))
 
-    # We are now on the default page for 100 Cambridge Park Drive.
-    #
-    # We will also want to construct URLs for our favorite buildings
-    # nearby, though - and we can get them from a dropdown on the page.
+    # We are now on the default page for 200 Cambridge Park Drive.
     homepage_soup = BeautifulSoup(login_result.text)
-    dropdown_elm = homepage_soup.find('div', {'class': 'secondary-bar'})
-    links = (elm.get('href') for elm in dropdown_elm.find_all('a'))
+    fooda_events = homepage_soup.find_all(
+        'div', {'class': 'myfooda-event__meta'})
 
-    for link in links:
-        foodpage_result = session.get(base_url + link)
-        foodpage_soup = BeautifulSoup(foodpage_result.text)
-        fooda_events = foodpage_soup.find_all(
-            'div', {'class': 'myfooda-event__meta'})
-
-        for event in fooda_events:
-            event = FoodaEvent(event_html=event)
-            yield event
+    for event in fooda_events:
+        event = FoodaEvent(event_html=event)
+        yield event
 
 
 def gather_fooda_context():
