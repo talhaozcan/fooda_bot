@@ -7,3 +7,9 @@ On this fine date of {{ current_date }}, you plebs may choose from:
   - {{ event.vendor_name }} ({{ event.vendor_cuisines }}{% if event.cuisine_emoji %} {{ event.cuisine_emoji }}{% endif %})
 
 {% endfor -%}
+
+Food Trucks
+{%- for truck in trucks %}
+  - {{ truck }}
+{%- endfor %}
+

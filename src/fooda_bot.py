@@ -90,13 +90,28 @@ def gather_fooda_context():
     return context
 
 
+def gather_food_trucks():
+    """These are sorta hard-coded since there's no online source"""
+    context = {
+        0: {"trucks": ("Little Blue Bakery", "Roadie's Diner",)},
+        1: {"trucks": ("Little Blue Bakery", "Gogi on the block", "Compliments Food Co.")},
+        2: {"trucks": ("Little Blue Bakery", "Chicken on the Road", "SA PA")},
+        3: {"trucks": ("Little Blue Bakery", "North East of the Border", "Moyzilla")},
+        4: {"trucks": ("Little Blue Bakery", "Rhythm n' Wraps",)},
+    }
+    return context[datetime.datetime.today().weekday()]
+
+
 def fooda_bot():
     """placeholder for more output logic"""
     jinja_env = jinja2.Environment(
-        undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader([HERE]))
-    jinja_template = jinja_env.get_template('fooda.j2')
-    sys.stdout.write(
-        jinja_template.render(**gather_fooda_context()).encode('utf-8', errors='replace'))
+        undefined=jinja2.StrictUndefined, loader=jinja2.FileSystemLoader([HERE])
+    )
+    jinja_template = jinja_env.get_template("fooda.j2")
+    context = dict()
+    context.update(gather_food_trucks())
+    context.update(gather_fooda_context())
+    sys.stdout.write(jinja_template.render(**context).encode("utf-8", errors="replace"))
 
 
 if __name__ == '__main__':
