@@ -92,14 +92,19 @@ def gather_fooda_context():
 
 def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
-    context = {
-        0: {"trucks": ("Little Blue Bakery", "Roadie's Diner",)},
-        1: {"trucks": ("Little Blue Bakery", "Gogi on the block", "Compliments Food Co.")},
-        2: {"trucks": ("Little Blue Bakery", "Chicken on the Road", "SA PA")},
-        3: {"trucks": ("Little Blue Bakery", "North East of the Border", "Moyzilla")},
-        4: {"trucks": ("Little Blue Bakery", "Rhythm n' Wraps",)},
-    }
-    return context[datetime.datetime.today().weekday()]
+    context = [
+        ("Little Blue Bakery", "Roadie's Diner",),
+        ("Little Blue Bakery", "Gogi on the block", "Compliments Food Co."),
+        ("Little Blue Bakery", "Chicken on the Road", "SA PA"),
+        ("Little Blue Bakery", "North East of the Border", "Moyzilla"),
+        ("Little Blue Bakery", "Rhythm n' Wraps",),
+    ]
+    weekday_number = datetime.datetime.today().weekday()
+    try:
+        trucks = context[weekday_number]
+    except IndexError:
+        trucks = tuple()
+    return {"trucks": trucks}
 
 
 def fooda_bot():
