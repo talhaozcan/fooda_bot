@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import datetime
 import os
 import random
@@ -116,7 +116,7 @@ def fooda_bot():
     context = dict()
     context.update(gather_food_trucks())
     context.update(gather_fooda_context())
-    sys.stdout.write(jinja_template.render(**context).encode("utf-8", errors="replace"))
+    sys.stdout.write(jinja_template.render(**context))
 
 
 if __name__ == '__main__':
