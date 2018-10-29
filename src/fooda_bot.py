@@ -94,7 +94,7 @@ def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
     context = [
         ("Little Blue Bakery", "Roadie's Diner",),
-        ("Little Blue Bakery", "Gogi on the block", "Compliments Food Co."),
+        ("Little Blue Bakery", "Gogi on the block", "Bon Me"),
         ("Little Blue Bakery", "Chicken on the Road", "SA PA"),
         ("Little Blue Bakery", "North East of the Border", "Moyzilla"),
         ("Little Blue Bakery", "Rhythm n' Wraps",),
