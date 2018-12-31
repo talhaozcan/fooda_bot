@@ -94,8 +94,8 @@ def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
     context = [
         ("Teri-yummy", "Zaaki Mediterranean", "Roadie's Diner",),
-        ("Chicken & Rice Guys", "Gogi on the block", "Bon Me"),
-        ("Kebabish", "Chicken on the Road", "SA PA"),
+        ("Chicken & Rice Guys", "Bon Me"),
+        ("Kebabish", "Chicken on the Road"),
         ("Sate", "The Pull-up", "North East of the Border", "Moyzilla"),
         ("Compliments", "Rhythm n' Wraps",),
     ]
