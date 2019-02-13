@@ -93,11 +93,12 @@ def gather_fooda_context():
 def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
     context = [
-        ("Teri-yummy", "Zaaki Mediterranean", "Roadie's Diner",),
-        ("Chicken & Rice Guys", "Bon Me"),
-        ("Kebabish", "Chicken on the Road"),
-        ("Sate", "The Pull-up", "North East of the Border", "Moyzilla"),
-        ("Compliments", "Rhythm n' Wraps",),
+        ("Little Blue Bakery", "Teri-yummy", "Zaaki Mediterranean", "Roadie's Diner",),
+        ("Little Blue Bakery", "Chicken & Rice Guys", "Bon Me"),
+        ("Little Blue Bakery", "Kebabish", "Chicken on the Road"),
+        ("Little Blue Bakery", "Sate", "The Pull-up", "North East of the Border", "Moyzilla"),
+        ("Little Blue Bakery", "Compliments", "Rhythm n' Wraps",),
+
     ]
     weekday_number = datetime.datetime.today().weekday()
     try:
