@@ -94,8 +94,8 @@ def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
     context = [
         ("Little Blue Bakery", "Teri-yummy", "Zaaki Mediterranean", "Roadie's Diner",),
-        ("Little Blue Bakery", "Chicken & Rice Guys", "Bon Me"),
-        ("Little Blue Bakery", "Kebabish", "Chicken on the Road"),
+        ("Little Blue Bakery", "Kebabish", "Bon Me"),
+        ("Little Blue Bakery", "Chicken & Rice Guys", "Chicken on the Road"),
         ("Little Blue Bakery", "Sate", "The Pull-up", "North East of the Border", "Moyzilla"),
         ("Little Blue Bakery", "Compliments", "Rhythm n' Wraps",),
 
