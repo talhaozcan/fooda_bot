@@ -94,10 +94,10 @@ def gather_food_trucks():
     """These are sorta hard-coded since there's no online source"""
     context = [
         ("Little Blue Bakery", "Teri-yummy", "Zaaki Mediterranean", "Roadie's Diner",),
-        ("Little Blue Bakery", "Kebabish", "Bon Me"),
-        ("Little Blue Bakery", "Chicken & Rice Guys", "Chicken on the Road"),
+        ("Little Blue Bakery", "Kebabish", "Gogi on the Block", "The Bacon Truck"),
+        ("Little Blue Bakery", "Chicken & Rice Guys", "Chicken on the Road", "SA PA"),
         ("Little Blue Bakery", "Sate", "The Pull-up", "North East of the Border", "Moyzilla"),
-        ("Little Blue Bakery", "Compliments", "Rhythm n' Wraps",),
+        ("Little Blue Bakery", "Zinnekens", "Compliments", "Rhythm n' Wraps",),
 
     ]
     weekday_number = datetime.datetime.today().weekday()
